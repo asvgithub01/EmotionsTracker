@@ -25,6 +25,10 @@ import android.widget.TextView;
 import com.google.android.gms.samples.vision.face.facetracker.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.face.Face;
 
+import emotionsTracker.asvfactory.com.model.AppXtatics;
+import emotionsTracker.asvfactory.com.model.EmotionTrackItemModel;
+import emotionsTracker.asvfactory.com.model.XtatisticManager;
+
 /**
  * Graphic instance for rendering face position, orientation, and landmarks within an associated
  * graphic overlay view.
@@ -126,6 +130,22 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         }
 
 
+        if (App.mXtaticManager!= null) {//tracking de emotions
+            EmotionTrackItemModel item= new EmotionTrackItemModel();
+            item.setTime(System.currentTimeMillis());
+            item.setIsSmilingProbability(face.getIsSmilingProbability());
+            item.setIsRightEyeOpenProbability(face.getIsRightEyeOpenProbability());
+            item.setIsLeftEyeOpenProbability(face.getIsLeftEyeOpenProbability());
+            item.setEventId(App.mCurrentEvent);
+            App.mXtaticManager.addEmotionTrackItem(item);
+
+            Message msgUpdateXtatics = new Message();
+            msgUpdateXtatics.what = 3;
+            App.mHandler.sendMessage(msgUpdateXtatics);
+        }
+
+
+        //todo hacer q pinte los ojos y la boca, no un rectangulo
         // Draws a bounding box around the face.
         float xOffset = scaleX(face.getWidth() / 2.0f);
         float yOffset = scaleY(face.getHeight() / 2.0f);

@@ -1,5 +1,8 @@
 package emotionsTracker.asvfactory.com.model;
 
+import static com.wagnerandade.coollection.Coollection.*;
+
+import android.content.Context;
 import android.view.View;
 
 import java.util.List;
@@ -9,25 +12,43 @@ import java.util.List;
  */
 public class XtatisticManager {
 
-    public static void newEmotionTrackContainer(String fileName) {
+    static Context mContext = null;
+
+    public XtatisticManager(Context context) {
+        this.mContext = context;
+    }
+
+    public void newEmotionTrackContainer(String fileName) {
         // EmotionTrackModel emotionTrackModel = EmotionTrackModel(fileName);
         //todo
 
     }
 
-    public static void addEmotionTrackItem(EmotionTrackItemModel item) {
-        //todo
+    public void addEmotionTrackItem(EmotionTrackItemModel item) {
+        AppXtatics.mEmotionTrackModel.addEmotionTrack(item);
+        DataUtil.saveEmotionTrack(mContext, AppXtatics.mEmotionTrackModel);
     }
 
-    public static EmotionTrackModel loadEmotionTrackContainer(String filename) {
+    public EmotionTrackModel loadEmotionTrackContainer(String filename) {
         return null;
     }
 
-    public static List<View> getGraphicEmotionContainerByEventId(String filename) {
+    public List<View> getGraphicEmotionContainerByEventId(String filename) {
         return null;
     }
 
-    public static View getGraphicEmotionContainerByTime(String filename) {
+    public View getGraphicEmotionContainerByTime(String filename) {
+        return null;
+    }
+
+    public static List<EmotionTrackItemModel> getEmotionTracksItemsFromEvent(List<EmotionTrackItemModel> lstInput,
+                                                                      int EventId) {
+        try {
+            List<EmotionTrackItemModel> lstOutput = from(lstInput).where("getEventId", eq(EventId)).all();
+            return lstOutput;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

@@ -15,6 +15,8 @@ public class EmotionTrackSdkManager {
 //    public startTrack(CameraSource cameraSource)
     //public List<Track>
 
+
+
     public void updateEventId(int e) {
             App.mEventId = e;
     }

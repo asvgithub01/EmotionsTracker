@@ -33,6 +33,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
@@ -56,23 +58,55 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import emotionsTracker.asvfactory.com.model.XtaticsView;
+
 /**
  * Activity for the face tracker app.  This app detects faces with the rear facing camera, and draws
  * overlay graphics to indicate the position, size, and ID of each face.
  */
-public final class FaceTrackerActivity extends AppCompatActivity implements View.OnClickListener, CameraSource.ShutterCallback, CameraSource.PictureCallback {
+public final class FaceTrackerActivity extends AppCompatActivity
+        implements View.OnClickListener, CameraSource.ShutterCallback, CameraSource.PictureCallback {
     private static final String TAG = "FaceTracker";
 
-    private CameraSource mCameraSource = null;
+    static final int SWIPE_MIN_DISTANCE = 120;
+    static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
+    private CameraSource mCameraSource = null;
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
-
+    private XtaticsView mXtaticsView;
 
     private TextView mTxtHappy;
-private ImageView mImgSmile;
+    private ImageView mImgSmile, mImgTest;
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
+
+    long mLastTimePhoto = 0;
+    private int mImgIdx = 0;
+    private Handler mHandler = new Handler();
+    private int[] mArrayImg = new int[]{
+            R.drawable.accidente,
+            R.drawable.admiracion,
+            R.drawable.atardecer,
+            R.drawable.ballenavarada,
+            R.drawable.cascadas,
+            R.drawable.chapapote,
+            R.drawable.curiosidad,
+            R.drawable.decepcion,
+            R.drawable.feliz,
+            R.drawable.ganar,
+            R.drawable.genocidio,
+            R.drawable.hambre,
+            R.drawable.homeless,
+            R.drawable.naturaleza,
+            R.drawable.ninia,
+            R.drawable.paraiso,
+            R.drawable.sorpresa,
+            R.drawable.ternura,
+            R.drawable.tristeza,
+            R.drawable.vertedero
+    };
+    Runnable mShowImageRunnable;
 
     //==============================================================================================
     // Activity Methods
@@ -85,32 +119,96 @@ private ImageView mImgSmile;
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.main);
+        //region imageSlider
+        mImgTest = (ImageView) findViewById(R.id.imgTest);
+
+        mShowImageRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (mImgIdx < mArrayImg.length) {
+                    App.mCurrentEvent = mArrayImg[mImgIdx];
+                    mImgTest.setImageDrawable(getDrawable(mArrayImg[mImgIdx]));
+                    mImgIdx += 1;
+                    mHandler.postDelayed(this, 5000);
+                } else {
+                    AlertDialog alertDialog = new AlertDialog.Builder(FaceTrackerActivity.this).create();
+                    alertDialog.setTitle("Finikitado");
+                    alertDialog.setMessage("Has terminado el test, enhorabuena comprueba tus resultados.");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //le metemos el gesture detector
+                                    mImgTest.setLongClickable(true);
+                                    mImgTest.setOnTouchListener(new View.OnTouchListener() {
+                                        private GestureDetector gesture = new GestureDetector(FaceTrackerActivity.this,
+                                                new GestureDetector.SimpleOnGestureListener() {
+                                                    @Override
+                                                    public boolean onFling(MotionEvent e1,
+                                                                           MotionEvent e2,
+                                                                           float velocityX,
+                                                                           float velocityY) {
+                                                        moveImages(e1, e2, velocityX, velocityY);
+                                                        return true;
+                                                    }
+                                                });
+
+                                        @Override
+                                        public boolean onTouch(View v, MotionEvent event) {
+                                            return gesture.onTouchEvent(event);
+                                        }
+                                    });
+
+
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+            }
+        };
+
+        mShowImageRunnable.run();
+        //endregion
 
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
         mTxtHappy = (TextView) findViewById(R.id.txtHappy);
-        mImgSmile =(ImageView) findViewById(R.id.imgSmile);
+        mImgSmile = (ImageView) findViewById(R.id.imgSmile);
+        mXtaticsView = (XtaticsView) findViewById(R.id.xtaticsView);
+
         mTxtHappy.setOnClickListener(this);
 
-        final int EVENT1 = 1;
-        final int EVENT2 = 2;
+        //region hanlder controler for mesasges sending from graphic
+        final int EVENT_texto = 1;
+        final int EVENT_photo = 2;
+        final int EVENT_xtatics = 3;
         App.mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
-                    case EVENT1:
+                    case EVENT_texto:
                         //todo aqui empieza el staticticSDK, addtrack(internamente, double handler)
                         String msgg = msg.getData().getString("trackFace");
                         mTxtHappy.setText(msgg + "\n" + mTxtHappy.getText() + "\n");
                         break;
+                    case EVENT_photo:
+                        //todo pete com.google.android.gms.vision.CameraSource.takePicture(Unknown Source)
+                        if (mLastTimePhoto + 10000 < System.currentTimeMillis()) {
+                            mLastTimePhoto = System.currentTimeMillis();
+                            mCameraSource.takePicture(FaceTrackerActivity.this, FaceTrackerActivity.this);
+                        }
+                        break;
+                    case EVENT_xtatics:
+                        mXtaticsView.updateXtatics();
+                        break;
 
-                    case EVENT2:
-                        //todo pete  com.google.android.gms.vision.CameraSource.takePicture(Unknown Source)
-                        mCameraSource.takePicture(FaceTrackerActivity.this, FaceTrackerActivity.this);
+                    default:
+                        //aqui meter los datos al sdk para q guarde el evento q nos mande(será el de la imagen)
                         break;
                 }
             }
         };
+//endregion
 
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
@@ -120,6 +218,44 @@ private ImageView mImgSmile;
         } else {
             requestCameraPermission();
         }
+    }
+
+
+    private boolean moveImages(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        try {
+            // right to left swipe
+            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                mImgIdx += 1;
+                showImage();
+                showXtatics();
+                return true;
+            } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                mImgIdx -= 1;
+                showImage();
+                showXtatics();
+                return true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void showXtatics() {
+        int eventId=mArrayImg[mImgIdx];
+        //todo
+        mXtaticsView.showXtaticsFromEventID(eventId);
+    }
+
+    private void showImage() {
+        if (mImgIdx > mArrayImg.length - 1)
+            mImgIdx = 0;
+
+        if (mImgIdx < 0)
+            mImgIdx = mArrayImg.length - 1;
+
+        mImgTest.setImageDrawable(getDrawable(mArrayImg[mImgIdx]));
     }
 
     /**
@@ -206,6 +342,7 @@ private ImageView mImgSmile;
     @Override
     protected void onPause() {
         super.onPause();
+        if (mHandler != null) mHandler.removeCallbacksAndMessages(mShowImageRunnable);
         mPreview.stop();
     }
 
@@ -216,6 +353,7 @@ private ImageView mImgSmile;
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mHandler != null) mHandler.removeCallbacksAndMessages(mShowImageRunnable);
         if (mCameraSource != null) {
             mCameraSource.release();
         }
@@ -304,20 +442,10 @@ private ImageView mImgSmile;
     @Override
     public void onClick(View v) {
         try {
-
-            mTxtHappy.setText("click");
-
-//            if (mPreview.mSurfaceView.getVisibility() == View.GONE)
-//                mPreview.mSurfaceView.setVisibility(View.VISIBLE);
-//            else
-//                mPreview.mSurfaceView.setVisibility(View.GONE);
-            //  mPreview.startIfReady();
             startCameraSource();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // startCameraSource();
-
     }
 
     @Override
@@ -327,8 +455,6 @@ private ImageView mImgSmile;
 
     @Override
     public void onPictureTaken(byte[] data) {
-
-
         Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
         mImgSmile.setImageBitmap(bmp);
         Log.d("BITMAP", bmp.getWidth() + "x" + bmp.getHeight());
@@ -349,6 +475,7 @@ private ImageView mImgSmile;
         }
         Log.d("Log", "onPictureTaken - jpeg");
     }
+
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -361,7 +488,7 @@ private ImageView mImgSmile;
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-      //  mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        //  mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }
 //==============================================================================================

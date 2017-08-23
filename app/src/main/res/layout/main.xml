@@ -1,42 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/topLayout"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:keepScreenOn="true">
-  <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="#cc0000"
-      android:orientation="vertical">
-<ImageButton
-    android:id="@+id/imgSmile"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
-    <EditText
-        android:id="@+id/txtHappy"
+    android:keepScreenOn="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/btnHideShow"
-       android:layout_above="@id/txtHappy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-  </RelativeLayout>
+        android:layout_height="match_parent"
+        android:background="#cc0000"
+         >
+        <ImageView
+            android:id="@+id/imgSmile"
+            android:layout_width="145dp"
+            android:layout_height="wrap_content"
+            android:contentDescription="Your photo"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/txtHappy"
+            android:rotation="270"/>
+        <EditText
+            android:id="@+id/txtHappy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+             />
 
-  <com.google.android.gms.samples.vision.face.facetracker.ui.camera.CameraSourcePreview
-      android:id="@+id/preview"
-      android:layout_width="1dp"
-      android:layout_height="1dp" ><!--android:layout_marginTop="600dp">-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ccc">
+            <ImageView
+                android:id="@+id/imgTest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="Image of test" />
 
-    <com.google.android.gms.samples.vision.face.facetracker.ui.camera.GraphicOverlay
-        android:id="@+id/faceOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+            <emotionsTracker.asvfactory.com.model.XtaticsView
+                android:id="@+id/xtaticsView"
+                android:layout_width="145dp"
+                android:layout_height="88dp"
+                android:background="#000"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+               />
+        </RelativeLayout>
+    </RelativeLayout>
 
-  </com.google.android.gms.samples.vision.face.facetracker.ui.camera.CameraSourcePreview>
+    <com.google.android.gms.samples.vision.face.facetracker.ui.camera.CameraSourcePreview
+        android:id="@+id/preview"
+        android:layout_width="1dp"
+        android:layout_height="1dp"><!--android:layout_marginTop="600dp">-->
 
+        <com.google.android.gms.samples.vision.face.facetracker.ui.camera.GraphicOverlay
+            android:id="@+id/faceOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.google.android.gms.samples.vision.face.facetracker.ui.camera.CameraSourcePreview>
 </RelativeLayout>

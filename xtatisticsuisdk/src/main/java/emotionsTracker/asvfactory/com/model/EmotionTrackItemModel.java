@@ -1,9 +1,11 @@
 package emotionsTracker.asvfactory.com.model;
 
+import java.io.Serializable;
+
 /**
  * Created by nubor on 23/10/2016.
  */
-public class EmotionTrackItemModel {
+public class EmotionTrackItemModel implements Serializable{
 
     private int eventId = 0;
     private float isLeftEyeOpenProbability = 0.0f;

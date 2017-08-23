@@ -1,0 +1,4 @@
+
+https://developers.google.com/android/reference/com/google/android/gms/vision/face/package-summary
+
+hay q investigar sobre el facedetector y  los otros builder q quizas ofrezcan mejores datos.

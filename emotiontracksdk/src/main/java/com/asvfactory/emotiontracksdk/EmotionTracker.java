@@ -45,7 +45,7 @@ public class EmotionTracker extends Tracker<Face> {
         eT.setIsRightEyeOpenProbability(face.getIsRightEyeOpenProbability());
         eT.setIsSmilingProbability(face.getIsSmilingProbability());
         eT.setTime(System.currentTimeMillis());
-        XtatisticManager.addEmotionTrackItem(eT);
+       //todo esto ha cambiado y este sdk no se usa XtatisticManager.addEmotionTrackItem(eT);
         //endregion
 //manda evento de sonrisa extreme
         if (face.getIsSmilingProbability() > 0.95) {

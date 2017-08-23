@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#99000000"
+    android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/txtHappy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Happy"
+            android:textColor="#fff"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSurprise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Surprise"
+            android:textColor="#fff"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Sad"
+            android:textColor="#fff"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtDisgust"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Disgust"
+            android:textColor="#fff"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="81dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="7dp"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/pbHappy"
+            android:layout_width="match_parent"
+            android:layout_height="14dp"
+            android:progressDrawable="@drawable/pb_bar_white"
+            style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"/>
+        <ProgressBar
+            android:id="@+id/pbSurprise"
+            android:layout_width="match_parent"
+            android:layout_height="14dp"
+            android:layout_marginTop="7dp"
+            android:progressDrawable="@drawable/pb_bar_white"
+            style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"/>
+        <ProgressBar
+            android:id="@+id/pbSad"
+            android:layout_width="match_parent"
+            android:layout_height="14dp"
+            android:layout_marginTop="7dp"
+            android:progressDrawable="@drawable/pb_bar_white"
+            style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"/>
+        <ProgressBar
+            android:id="@+id/pbDisgust"
+            android:layout_width="match_parent"
+            android:layout_height="14dp"
+            android:layout_marginTop="7dp"
+            android:progressDrawable="@drawable/pb_bar_white"
+            style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"/>
+    </LinearLayout>
+</LinearLayout>

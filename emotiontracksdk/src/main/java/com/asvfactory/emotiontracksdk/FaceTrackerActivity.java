@@ -85,6 +85,10 @@ public final class FaceTrackerActivity extends AppCompatActivity
         mTxtHappy = (TextView) findViewById(R.id.txtHappy);
 
 
+        //todo esto es aqui xo el Handler no es debe estar en el app el handler
+        //desbe crearse aqui y se pasa al control de la camara y este a su vez lo envia al grafics o bien el si lo mete a una pseudo app
+
+
         final int EVENT1 = 1;
         final int EVENT2 = 2;
         App.mHandler = new Handler() {
@@ -180,22 +184,7 @@ public final class FaceTrackerActivity extends AppCompatActivity
 //                .show();
     }
 
-    /**
-     * Callback for the result from requesting permissions. This method
-     * is invoked for every call on {@link #requestPermissions(String[], int)}.
-     * <p>
-     * <strong>Note:</strong> It is possible that the permissions request interaction
-     * with the user is interrupted. In this case you will receive empty permissions
-     * and results arrays which should be treated as a cancellation.
-     * </p>
-     *
-     * @param requestCode  The request code passed in {@link #requestPermissions(String[], int)}.
-     * @param permissions  The requested permissions. Never null.
-     * @param grantResults The grant results for the corresponding permissions
-     *                     which is either {@link PackageManager#PERMISSION_GRANTED}
-     *                     or {@link PackageManager#PERMISSION_DENIED}. Never null.
-     * @see #requestPermissions(String[], int)
-     */
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode != RC_HANDLE_CAMERA_PERM) {

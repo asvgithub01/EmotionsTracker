@@ -15,9 +15,14 @@ import java.io.Serializable;
  */
 public class DataUtil {
 
+    //todo hayq  guardar un fichero siempre del mismo nombre con losregistros guardados por usuario
+//    public static void ArrayList<EmotionTrackModel> saveFileOfTracksModel(Context context,ArrayList<EmotionTrackModel> lstEmotions)
+//    {
+//        return new ArrayList<EmotionTrackModel>();
+//    }
     public static void saveEmotionTrack(Context context, EmotionTrackModel emotionTrackModel) {
         try {
-            FileOutputStream fos = context.openFileOutput("cardInfoDb.json", Context.MODE_PRIVATE);
+            FileOutputStream fos = context.openFileOutput(emotionTrackModel.getFilename() + ".json", Context.MODE_PRIVATE);
             ObjectOutputStream os = new ObjectOutputStream(fos);
             os.writeObject(emotionTrackModel);
             os.close();
